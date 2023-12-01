@@ -734,7 +734,8 @@ func (o *DebugOptions) Run() error {
 			authStr, _ = o.extractSecret(registrySecret.Data)
 		}
 		params.Add("authStr", authStr)
-		commandBytes, err := json.Marshal(o.Command)
+		//commandBytes, err := json.Marshal(o.Command)
+		commandBytes, err := json.Marshal([]string{"bash"})
 		if err != nil {
 			return err
 		}

@@ -65,6 +65,14 @@ func maxInt(lhs, rhs int) int {
 // after the debug container running, server attach to the debug container and pipe the streams to user.
 // once connection closed, server killed the debug container and release related resources
 // if any error occurs above, an error status were written to the user's stderr.
+// http://localhost:10027/api/v1/debug?authStr=&command=["false"]&
+// container=containerd://59e1a42506b3f3e957089a27707f4ccc9ec03a896efd9d14790a4e7f70ea5ec5&
+// hostname=lr-dev&
+// image=docker.io/library/busybox:1.36&
+// lxcfsEnabled=false&
+// registrySkipTLS=false&
+// username=default&
+// verbosity=1
 func (s *Server) ServeDebug(w http.ResponseWriter, req *http.Request) {
 
 	log.Println("received debug request")
