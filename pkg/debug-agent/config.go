@@ -10,7 +10,7 @@ import (
 var (
 	DefaultConfig = Config{
 		DockerEndpoint:        "unix:///var/run/docker.sock",
-		ContainerdEndpoint:    "/run/containerd/containerd.sock",
+		ContainerdEndpoint:    "/run/k3s/containerd/containerd.sock",
 		RuntimeTimeout:        30 * time.Second,
 		StreamIdleTimeout:     10 * time.Minute,
 		StreamCreationTimeout: 15 * time.Second,

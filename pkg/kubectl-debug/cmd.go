@@ -707,7 +707,7 @@ func (o *DebugOptions) Run() error {
 		params.Add("hostname", hstNm)
 		params.Add("username", o.UserName)
 		if o.IsLxcfsEnabled {
-			params.Add("lxcfsEnabled", "true")
+			params.Add("lxcfsEnabled", "false")
 		} else {
 			params.Add("lxcfsEnabled", "false")
 		}
@@ -971,8 +971,8 @@ func (o *DebugOptions) launchPod(pod *corev1.Pod) (*corev1.Pod, error) {
 
 // getAgentPod construct debug-agent pod template
 func (o *DebugOptions) getAgentPod() *corev1.Pod {
-	prop := corev1.MountPropagationBidirectional
-	directoryCreate := corev1.HostPathDirectoryOrCreate
+	//prop := corev1.MountPropagationBidirectional
+	//directoryCreate := corev1.HostPathDirectoryOrCreate
 	priveleged := true
 	agentPod := &corev1.Pod{
 		TypeMeta: v1.TypeMeta{
@@ -1029,21 +1029,21 @@ func (o *DebugOptions) getAgentPod() *corev1.Pod {
 						},
 						{
 							Name:      "varlibcontainerd",
-							MountPath: "/var/lib/containerd",
+							MountPath: "/var/lib/rancher/k3s/agent/containerd",
 						},
 						{
 							Name:      "runcontainerd",
 							MountPath: "/run/containerd",
 						},
 						{
-							Name:      "runrunc",
-							MountPath: "/run/runc",
+							Name:      "runcontainerdk3s",
+							MountPath: "/run/k3s/containerd",
 						},
-						{
-							Name:             "lxcfs",
-							MountPath:        "/var/lib/lxc",
-							MountPropagation: &prop,
-						},
+						//{
+						//	Name:             "lxcfs",
+						//	MountPath:        "/var/lib/lxc",
+						//	MountPropagation: &prop,
+						//},
 					},
 					Ports: []corev1.ContainerPort{
 						{
@@ -1071,20 +1071,28 @@ func (o *DebugOptions) getAgentPod() *corev1.Pod {
 						},
 					},
 				},
-				{
-					Name: "lxcfs",
-					VolumeSource: corev1.VolumeSource{
-						HostPath: &corev1.HostPathVolumeSource{
-							Path: "/var/lib/lxc",
-							Type: &directoryCreate,
-						},
-					},
-				},
+				//{
+				//	Name: "lxcfs",
+				//	VolumeSource: corev1.VolumeSource{
+				//		HostPath: &corev1.HostPathVolumeSource{
+				//			Path: "/var/lib/lxc",
+				//			Type: &directoryCreate,
+				//		},
+				//	},
+				//},
 				{
 					Name: "vardata",
 					VolumeSource: corev1.VolumeSource{
 						HostPath: &corev1.HostPathVolumeSource{
 							Path: "/var/data",
+						},
+					},
+				},
+				{
+					Name: "runcontainerdk3s",
+					VolumeSource: corev1.VolumeSource{
+						HostPath: &corev1.HostPathVolumeSource{
+							Path: "/run/k3s/containerd",
 						},
 					},
 				},
@@ -1100,7 +1108,7 @@ func (o *DebugOptions) getAgentPod() *corev1.Pod {
 					Name: "varlibcontainerd",
 					VolumeSource: corev1.VolumeSource{
 						HostPath: &corev1.HostPathVolumeSource{
-							Path: "/var/lib/containerd",
+							Path: "/var/lib/rancher/k3s/agent/containerd",
 						},
 					},
 				},
