@@ -707,7 +707,7 @@ func (o *DebugOptions) Run() error {
 		params.Add("hostname", hstNm)
 		params.Add("username", o.UserName)
 		if o.IsLxcfsEnabled {
-			params.Add("lxcfsEnabled", "false")
+			params.Add("lxcfsEnabled", "true")
 		} else {
 			params.Add("lxcfsEnabled", "false")
 		}
@@ -975,6 +975,7 @@ func (o *DebugOptions) getAgentPod() *corev1.Pod {
 	//prop := corev1.MountPropagationBidirectional
 	//directoryCreate := corev1.HostPathDirectoryOrCreate
 	priveleged := true
+	t := int64(0)
 	agentPod := &corev1.Pod{
 		TypeMeta: v1.TypeMeta{
 			Kind:       "Pod",
@@ -985,8 +986,9 @@ func (o *DebugOptions) getAgentPod() *corev1.Pod {
 			Namespace: o.AgentPodNamespace,
 		},
 		Spec: corev1.PodSpec{
-			HostPID:  true,
-			NodeName: o.AgentPodNode,
+			TerminationGracePeriodSeconds: &t,
+			HostPID:                       true,
+			NodeName:                      o.AgentPodNode,
 			ImagePullSecrets: []corev1.LocalObjectReference{
 				{
 					Name: o.AgentImagePullSecretName,
