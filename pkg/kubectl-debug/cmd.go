@@ -94,7 +94,7 @@ const (
 
 	defaultDebugAgentPort                = 10027
 	defaultDebugAgentConfigFileLocation  = "/tmp/debugAgentConfigFile"
-	defaultDebugAgentImage               = "jamesgrantmediakind/debug-agent:latest"
+	defaultDebugAgentImage               = ""
 	defaultDebugAgentImagePullPolicy     = string(corev1.PullIfNotPresent)
 	defaultDebugAgentImagePullSecretName = ""
 	defaultDebugAgentPodNamePrefix       = "debug-agent-pod"
@@ -110,7 +110,7 @@ const (
 	defaultRegistrySkipTLSVerify   = false
 	defaultPortForward             = true
 	defaultCreateDebugAgentPod     = true
-	defaultLxcfsEnable             = true
+	defaultLxcfsEnable             = false
 	defaultVerbosity               = 0
 )
 
@@ -279,7 +279,7 @@ func NewDebugCmd(streams genericclioptions.IOStreams) *cobra.Command {
 	cmd.Flags().StringVar(&opts.AgentPodResource.MemoryLimits, "agent-pod-memory-limits", "",
 		fmt.Sprintf("agent pod memory limits, default is not set"))
 
-	cmd.Flags().BoolVarP(&opts.IsLxcfsEnabled, "enable-lxcfs", "", true,
+	cmd.Flags().BoolVarP(&opts.IsLxcfsEnabled, "enable-lxcfs", "", defaultLxcfsEnable,
 		fmt.Sprintf("Enable Lxcfs, the target container can use its proc files, default: %t", defaultLxcfsEnable))
 
 	cmd.Flags().IntVarP(&opts.Verbosity, "verbosity", "v", 0,
@@ -734,8 +734,8 @@ func (o *DebugOptions) Run() error {
 			authStr, _ = o.extractSecret(registrySecret.Data)
 		}
 		params.Add("authStr", authStr)
-		//commandBytes, err := json.Marshal(o.Command)
-		commandBytes, err := json.Marshal([]string{"bash"})
+		commandBytes, err := json.Marshal(o.Command)
+		//commandBytes, err := json.Marshal([]string{"bash"})
 		if err != nil {
 			return err
 		}
